@@ -1,0 +1,176 @@
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load employee data
+df = pd.read_csv("employees.csv")
+
+# Create output folder
+os.makedirs("charts", exist_ok=True)
+
+# Calculate average salary by department
+avg_salary = df.groupby("department")["salary"].mean()
+
+# ==========================================
+# CHART 1: Bar chart - Average salary
+# ==========================================
+fig, ax = plt.subplots(figsize=(9, 5))
+
+bars = ax.bar(
+    avg_salary.index,
+    avg_salary.values,
+    color=["steelblue", "orange", "seagreen", "tomato"]
+)
+
+ax.set_title("Average Salary by Department")
+ax.set_xlabel("Department")
+ax.set_ylabel("Average Salary (₹)")
+ax.bar_label(bars, fmt="₹%.2f", padding=4)
+ax.tick_params(axis="x", rotation=15)
+
+fig.tight_layout()
+fig.savefig("charts/bar_chart.png", dpi=300)
+plt.close(fig)
+
+
+==========================================
+CHART 2: Histogram - Salary distribution
+==========================================
+fig, ax = plt.subplots(figsize=(8, 5))
+
+ax.hist(
+    df["salary"],
+    bins=5,
+    color="orange",
+    edgecolor="black"
+)
+
+ax.set_title("Distribution of Employee Salaries")
+ax.set_xlabel("Salary (₹)")
+ax.set_ylabel("Number of Employees")
+
+fig.tight_layout()
+fig.savefig("charts/salary_histogram.png", dpi=300)
+plt.close(fig)
+
+
+# ==========================================
+# CHART 3: Scatter - ID vs salary
+# ==========================================
+fig, ax = plt.subplots(figsize=(8, 5))
+
+for department, group in df.groupby("department"):
+    ax.scatter(
+        group["id"],
+        group["salary"],
+        label=department,
+        s=90,
+        alpha=0.8
+    )
+
+ax.set_title("Employee ID vs Salary by Department")
+ax.set_xlabel("Employee ID")
+ax.set_ylabel("Salary (₹)")
+ax.legend(title="Department")
+ax.grid(True, linestyle="--", alpha=0.3)
+
+fig.tight_layout()
+fig.savefig("charts/id_vs_salary.png", dpi=300)
+plt.close(fig)
+
+
+# ==========================================
+# CHART 4: Line chart - Monthly sales
+# ==========================================
+months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+sales = [12, 15, 14, 18, 22, 25]
+
+fig, ax = plt.subplots(figsize=(8, 5))
+
+ax.plot(
+    months,
+    sales,
+    marker="o",
+    linestyle="-",
+    color="green",
+    linewidth=2,
+    label="Monthly Sales"
+)
+
+ax.set_title("Monthly Sales: January to June")
+ax.set_xlabel("Month")
+ax.set_ylabel("Sales")
+ax.legend()
+ax.grid(True, linestyle="--", alpha=0.3)
+
+fig.tight_layout()
+fig.savefig("charts/monthly_sales.png", dpi=300)
+plt.close(fig)
+
+
+# ==========================================
+# BONUS: All four charts in one figure
+# ==========================================
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Bar chart
+bonus_bars = axes[0, 0].bar(
+    avg_salary.index,
+    avg_salary.values,
+    color="steelblue"
+)
+axes[0, 0].set_title("Average Salary by Department")
+axes[0, 0].set_xlabel("Department")
+axes[0, 0].set_ylabel("Average Salary (₹)")
+axes[0, 0].bar_label(bonus_bars, fmt="₹%.0f", padding=3)
+axes[0, 0].tick_params(axis="x", rotation=15)
+
+# Histogram
+axes[0, 1].hist(
+    df["salary"],
+    bins=5,
+    color="orange",
+    edgecolor="black"
+)
+axes[0, 1].set_title("Salary Distribution")
+axes[0, 1].set_xlabel("Salary (₹)")
+axes[0, 1].set_ylabel("Number of Employees")
+
+# Scatter plot
+for department, group in df.groupby("department"):
+    axes[1, 0].scatter(
+        group["id"],
+        group["salary"],
+        label=department,
+        s=70
+    )
+
+axes[1, 0].set_title("Employee ID vs Salary")
+axes[1, 0].set_xlabel("Employee ID")
+axes[1, 0].set_ylabel("Salary (₹)")
+axes[1, 0].legend(title="Department")
+
+# Line chart
+axes[1, 1].plot(
+    months,
+    sales,
+    marker="o",
+    color="green",
+    label="Monthly Sales"
+)
+axes[1, 1].set_title("Monthly Sales")
+axes[1, 1].set_xlabel("Month")
+axes[1, 1].set_ylabel("Sales")
+axes[1, 1].legend()
+axes[1, 1].grid(True, alpha=0.3)
+
+fig.tight_layout()
+fig.savefig("charts/all_charts_dashboard.png", dpi=300)
+plt.close(fig)
+
+# Print average salary details
+print("Average salary by department:")
+print(avg_salary.round(2))
+
+print("\nAll charts created successfully!")
+print("Check the charts folder for the PNG files.")

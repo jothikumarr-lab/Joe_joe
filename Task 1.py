@@ -54,3 +54,10 @@ high_salary = df[df["salary"] > 50000]
 print("Salary above 50000:", len(high_salary), "employees")
 it_employees = df[df["department"] == "IT"]
 print("IT department:", ", ".join(it_employees["name"]))
+arr= np.arange(1,25)
+reshaped = arr.reshape(2,3,4)
+print(reshaped)
+print("overall_shape:",reshaped.shape)
+
+for i, slice_arr in enumerate(reshaped):
+    print(f"slice {i} shape:",slice_arr.shape)
